@@ -1,105 +1,121 @@
-# 📡 Starlink Daily Data Usage Extractor (JSON Parser)
+# Starlink Data Extractor
 
-This project extracts **daily internet usage data 📊** from a Starlink **JSON export file** and converts it into a clean, structured **CSV file 🗂️** for analysis.
-
-Instead of web scraping HTML, this version processes **intercepted API-style JSON data**, making it more reliable, structured, and easier to automate.
+This script extracts daily usage data from a Starlink JSON export and converts it into a clean CSV file.
 
 ---
 
-# 📌 What This Script Does
+## 📦 Requirements
 
-* Loads Starlink usage data from a JSON file 📥
-* Navigates nested billing cycle structures
-* Extracts daily usage values per cycle 📅
-* Converts raw values into readable GB format
-* Exports everything into a clean CSV file 📄
-
----
-
-# 🛠️ Technologies Used
-
-* Python 🐍
-* JSON (built-in)
-* CSV (built-in)
-* datetime (built-in)
-
----
-
-# 📦 Requirements
-
-No external libraries are required.
-
-```txt
-# No dependencies required
-# Uses only Python standard library
-```
-
----
-
-# 🚀 How to Use
-
-## 1️⃣ Prepare your JSON file
-
-Place your exported Starlink JSON file in the project folder or update the filename in the script if needed.
-
-Example:
-
-```txt
-starlink_data.json
-```
-
----
-
-## 2️⃣ Run the script
+Install dependencies (no external packages required beyond Python standard library):
 
 ```bash
-python your_script_name.py
+pip install -r requirements.txt
+```
+
+### `requirements.txt`
+
+```txt
+# No external dependencies required
+# This project uses only Python standard libraries
 ```
 
 ---
 
-## 3️⃣ Output file
+## 📁 Project Structure
 
-After running, the script generates:
+```
+SOLA/
+│
+├── scrape_starlink.py
+├── starlink_data.json   # (optional default input file)
+├── starlink_daily_usage.csv  # (output file)
+├── requirements.txt
+└── README.md
+```
 
-```txt
+---
+
+## 🚀 How to Use
+
+### 1. Default Usage (same folder)
+
+Place your JSON file in the same directory as the script:
+
+```bash
+python scrape_starlink.py
+```
+
+The script will automatically look for:
+
+```
+./starlink_data.json
+```
+
+Output:
+
+```
 starlink_daily_usage.csv
 ```
 
 ---
 
-# 📁 Output Format
+### 2. Using a Custom JSON File Path (CLI)
 
-The CSV output will look like this:
+You can pass a file path directly:
+
+```bash
+python scrape_starlink.py "C:\Users\user\Documents\SOLA\Starlink\starlink_data.json"
+```
+
+---
+
+### 3. Using Environment Variable
+
+Set an environment variable pointing to your JSON file:
+
+#### Windows (PowerShell)
+
+```powershell
+setx STARLINK_JSON "C:\path\to\starlink_data.json"
+```
+
+Then run:
+
+```bash
+python scrape_starlink.py
+```
+
+---
+
+## 📊 Output Format
+
+The script generates a CSV file:
+
+```
+starlink_daily_usage.csv
+```
+
+Example:
 
 | Date       | Data Usage |
 | ---------- | ---------- |
-| 2025-11-17 | 2.35 GB    |
-| 2025-11-18 | 1.92 GB    |
+| 2025-11-17 | 2.45 GB    |
+| 2025-11-18 | 3.10 GB    |
 
 ---
 
-# ⚙️ How It Works
+## ⚙️ What the Script Does
 
-1. Reads the JSON file containing billing cycle data
-2. Extracts the `startDate` for each billing cycle
-3. Iterates through the `dailyData` array
-4. Computes actual dates using `timedelta`
-5. Converts usage values into GB format
-6. Writes structured rows into a CSV file
-
----
-
-# 🎯 Learning Outcomes
-
-* Working with nested JSON structures
-* Extracting data from API-like payloads
-* Date manipulation using `datetime`
-* Exporting structured datasets to CSV
-* Building simple real-world data pipelines
+* Reads Starlink billing cycle JSON
+* Iterates through `billingCyclesAnnotated`
+* Maps daily usage to actual calendar dates
+* Cleans and rounds GB values
+* Outputs structured CSV for analysis
 
 ---
 
-# 📄 License
+## ❗ Notes
 
-This project is for educational purposes only.
+* Ensure JSON structure matches Starlink export format
+* Missing or empty daily values default to `0.0 GB`
+* Script is safe to rerun (it overwrites the CSV)
