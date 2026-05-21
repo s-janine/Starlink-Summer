@@ -27,8 +27,8 @@ pip install -r requirements.txt
 SOLA/
 │
 ├── scrape_starlink.py
-├── starlink_data.json   # (optional default input file)
-├── starlink_daily_usage.csv  # (output file)
+├── starlink_data.json          # (input file you will create)
+├── starlink_daily_usage.csv    # (output file)
 ├── requirements.txt
 └── README.md
 ```
@@ -37,29 +37,30 @@ SOLA/
 
 ## 🚀 How to Use
 
-### 1. Run or prepare your data source
+### 1. Extract Starlink Data (Browser Steps)
 
-Before running the script, you must first obtain the Starlink network response data.
+To get the required JSON data:
 
-Go to your Starlink account dashboard and capture the **“12 Network Refresh Annotated Response”**, then save it as a JSON file:
+1. Open your browser
+2. Press **F12** (Developer Tools)
+3. Go to the **Network** tab
+4. Click **Refresh**
+5. Filter or search for **Fetch**
+6. Locate **“Annotated Response”**
+7. Open the response
+8. Copy the full JSON data
+
+---
+
+### 2. Create Input File
+
+Paste the copied JSON into a new file:
 
 ```
 starlink_data.json
 ```
 
-Place it in the same folder as the script.
-
----
-
-### 2. Default Usage (same folder)
-
-Once the JSON file is ready, run the script:
-
-```bash
-python scrape_starlink.py
-```
-
-The script will automatically look for:
+Place it in the same folder as the script:
 
 ```
 ./starlink_data.json
@@ -67,7 +68,23 @@ The script will automatically look for:
 
 ---
 
-### 3. Output
+### 3. Run the Script (Default Mode)
+
+Once the file is ready, run:
+
+```bash
+python scrape_starlink.py
+```
+
+The script will automatically read:
+
+```
+starlink_data.json
+```
+
+---
+
+### 4. Output
 
 After execution, the script generates:
 
@@ -78,11 +95,6 @@ starlink_daily_usage.csv
 ---
 
 ## 📊 Output Format
-
-Example:   |
-| 2025-11-18 | 3.10 GB    |
-
----
 
 Example:
 
@@ -105,6 +117,9 @@ Example:
 
 ## ❗ Notes
 
-* Ensure JSON structure matches Starlink export format
-* Missing or empty daily values default to `0.0 GB`
-* Script is safe to rerun (it overwrites the CSV)
+* Ensure the JSON comes from the **Network → Fetch → Annotated Response**
+* The script expects valid Starlink billing structure
+* Missing values default to `0.0 GB`
+* Script overwrites the CSV each run
+
+
