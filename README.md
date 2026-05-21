@@ -57,36 +57,6 @@ Output:
 starlink_daily_usage.csv
 ```
 
----
-
-### 2. Using a Custom JSON File Path (CLI)
-
-You can pass a file path directly:
-
-```bash
-python scrape_starlink.py "C:\Users\user\Documents\SOLA\Starlink\starlink_data.json"
-```
-
----
-
-### 3. Using Environment Variable
-
-Set an environment variable pointing to your JSON file:
-
-#### Windows (PowerShell)
-
-```powershell
-setx STARLINK_JSON "C:\path\to\starlink_data.json"
-```
-
-Then run:
-
-```bash
-python scrape_starlink.py
-```
-
----
-
 ## 📊 Output Format
 
 The script generates a CSV file:
