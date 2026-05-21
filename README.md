@@ -37,9 +37,23 @@ SOLA/
 
 ## 🚀 How to Use
 
-### 1. Default Usage (same folder)
+### 1. Run or prepare your data source
 
-Place your JSON file in the same directory as the script:
+Before running the script, you must first obtain the Starlink network response data.
+
+Go to your Starlink account dashboard and capture the **“12 Network Refresh Annotated Response”**, then save it as a JSON file:
+
+```
+starlink_data.json
+```
+
+Place it in the same folder as the script.
+
+---
+
+### 2. Default Usage (same folder)
+
+Once the JSON file is ready, run the script:
 
 ```bash
 python scrape_starlink.py
@@ -51,19 +65,24 @@ The script will automatically look for:
 ./starlink_data.json
 ```
 
-Output:
+---
+
+### 3. Output
+
+After execution, the script generates:
 
 ```
 starlink_daily_usage.csv
 ```
+
+---
 
 ## 📊 Output Format
 
-The script generates a CSV file:
+Example:   |
+| 2025-11-18 | 3.10 GB    |
 
-```
-starlink_daily_usage.csv
-```
+---
 
 Example:
 
