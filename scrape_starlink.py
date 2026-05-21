@@ -1,91 +1,43 @@
+import json
 import csv
-import re
-import glob
-import sys
 from datetime import datetime, timedelta
-from bs4 import BeautifulSoup
 
-def auto_scrape_starlink():
-    # 1. Locate all HTML files in the current directory
-    files = glob.glob("*.html")
-    if not files:
-        print("Error: No HTML files were found in this directory.")
-        return
+# 1. Load the intercepted JSON data
+with open('C:\\Users\\user\\Documents\\SOLA\\Starlink\\starlink_data.json', 'r') as file:
+    payload = json.load(file)
 
-    # 2. Display available files for user selection
-    print("Available HTML files:")
-    for i, file_name in enumerate(files):
-        print(f"[{i + 1}] {file_name}")
+extracted_rows = []
 
-    try:
-        selection = input("\nSelect the file number to process: ")
-        idx = int(selection) - 1
+# Navigating through Starlink's specific object tree
+billing_cycles = payload.get("content", {}).get("billingCyclesAnnotated", [])
 
-        if idx < 0 or idx >= len(files):
-            print("Invalid selection. Exiting program.")
-            return
+for cycle in billing_cycles:
+    # Extract structural dates for the billing cycle
+    start_date_str = cycle.get("startDate").split("T")[0] # e.g., '2025-11-17'
+    start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
+    
+    daily_usages = cycle.get("dailyData", [])
+    
+    # Enumerate through every day in the array chunk
+    for index, usage_wrapper in enumerate(daily_usages):
+        # Calculate individual day offset from the cycle's starting date
+        current_day = start_date + timedelta(days=index)
+        current_day_str = current_day.strftime("%Y-%m-%d")
+        
+        # Extract the raw decimal value inside the nested array
+        if usage_wrapper and len(usage_wrapper) > 0:
+            gb_value = round(usage_wrapper[0], 2) # Clean decimal trailing numbers
+        else:
+            gb_value = 0.0
+            
+        extracted_rows.append([current_day_str, f"{gb_value} GB"])
 
-        file_path = files[idx]
-        print(f"\nNow processing: {file_path}")
+# 2. Write rows out to a structured, human-readable CSV format
+output_filename = "starlink_daily_usage.csv"
+with open(output_filename, "w", newline="", encoding="utf-8") as f:
+    writer = csv.writer(f)
+    # Write cleanly labeled headers
+    writer.writerow(["Date", "Data Usage"]) 
+    writer.writerows(extracted_rows)
 
-    except ValueError:
-        print("Invalid input detected. Please enter a valid number.")
-        return
-
-    # 3. Load and parse the selected HTML file
-    with open(file_path, 'r', encoding='utf-8') as f:
-        soup = BeautifulSoup(f.read(), 'html.parser')
-
-    # 4. Extract total data usage from page text
-    total_gb = 459.0  # Default fallback value
-    all_p = soup.find_all('p')
-
-    for i, p in enumerate(all_p):
-        if 'Total Data Usage' in p.text:
-            try:
-                # Assume the value is located in the next paragraph tag
-                total_gb = float(all_p[i + 1].text.replace('GB', '').strip())
-            except:
-                pass
-
-    # 5. Extract bar heights (filtering out zero/invalid values)
-    bars = soup.find_all('rect', class_='MuiBarElement-series-y_0')
-    heights = [float(b.get('height', 0)) for b in bars if float(b.get('height', 0)) > 0]
-
-    # 6. Validate and compute usage ratio
-    if sum(heights) == 0:
-        print("Error: Unable to compute usage ratio (no valid bar heights found).")
-        return
-
-    gb_per_pixel = total_gb / sum(heights)
-
-    # 7. Detect billing cycle start date automatically
-    start_date = datetime.today().replace(day=17)
-
-    for p in all_p:
-        match = re.search(r'(\d{1,2})/(\d{1,2})/(\d{4})', p.text)
-        if match:
-            last_upd = datetime(int(match.group(3)), int(match.group(1)), int(match.group(2)))
-            start_date = last_upd.replace(day=17)
-
-            if last_upd.day < 17:
-                # If before the 17th, shift cycle to previous month
-                if start_date.month == 1:
-                    start_date = start_date.replace(year=start_date.year - 1, month=12)
-                else:
-                    start_date = start_date.replace(month=start_date.month - 1)
-            break
-
-    # 8. Export results to CSV file
-    with open('data_usage.csv', 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['Date', 'Data Usage (GB)'])
-
-        for i, h in enumerate(heights):
-            date_str = (start_date + timedelta(days=i)).strftime('%m/%d/%Y')
-            writer.writerow([date_str, round(h * gb_per_pixel, 2)])
-
-    print(f"Success! Data exported for cycle starting {start_date.strftime('%B %d, %Y')}")
-
-if __name__ == '__main__':
-    auto_scrape_starlink()
+print(f"🎉 Success! Generated '{output_filename}' containing {len(extracted_rows)} tracked entries.")
