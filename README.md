@@ -46,7 +46,7 @@ To get the required JSON data:
 3. Go to the **Network** tab
 4. Click **Refresh**
 5. Filter or search for **Fetch**
-6. Locate **“Annotated Response”**
+6. Locate **“Annotated”**
 7. Open the response
 8. Copy the full JSON data
 
