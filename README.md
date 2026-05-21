@@ -48,7 +48,7 @@ To get the required JSON data:
 5. Filter or search for **Fetch**
 6. Locate **“Annotated”**
 7. Open the response
-8. Copy the full JSON data
+8. Copy the full data
 
 ---
 
