@@ -1,9 +1,27 @@
 import json
 import csv
+import os
+import sys
+from pathlib import Path
 from datetime import datetime, timedelta
 
 # 1. Load the intercepted JSON data
-with open('C:\\Users\\user\\Documents\\SOLA\\Starlink\\starlink_data.json', 'r') as file:
+# Determine JSON file path from (1) env var, (2) CLI arg, or (3) file next to this script
+script_dir = Path(__file__).resolve().parent
+env_path = os.environ.get("STARLINK_JSON")
+cli_path = Path(sys.argv[1]) if len(sys.argv) > 1 else None
+
+if env_path:
+    json_path = Path(env_path)
+elif cli_path:
+    json_path = cli_path
+else:
+    json_path = script_dir / "starlink_data.json"
+
+if not json_path.exists():
+    raise FileNotFoundError(f"Starlink JSON not found at {json_path}")
+
+with open(json_path, 'r', encoding='utf-8') as file:
     payload = json.load(file)
 
 extracted_rows = []
