@@ -1,90 +1,105 @@
-# 🌐 Starlink Data Usage Web Scraper
+# 📡 Starlink Daily Data Usage Extractor (JSON Parser)
 
-This project is a simple web scraping assignment that extracts **daily data usage information 📊** from a Starlink webpage and saves it into a structured **CSV file 🗂️** for further analysis.
+This project extracts **daily internet usage data 📊** from a Starlink **JSON export file** and converts it into a clean, structured **CSV file 🗂️** for analysis.
+
+Instead of web scraping HTML, this version processes **intercepted API-style JSON data**, making it more reliable and structured.
 
 ---
 
-## 📌 Project Objective
+## 📌 What This Script Does
 
-- Scrape Starlink webpage 🕸️  
-- Extract **data usage per day 📅**  
-- Store data in a structured format  
-- Export results into a `.csv` file 📝  
+* Loads Starlink usage data from a JSON file 📥
+* Navigates nested billing cycle structure
+* Extracts daily usage values per cycle 📅
+* Converts raw values into readable GB format
+* Exports everything into a clean CSV file 📄
 
 ---
 
 ## 🛠️ Technologies Used
 
-- Python 🐍  
-- BeautifulSoup4  
-- lxml  
-- pandas  
+* Python 🐍
+* JSON (built-in)
+* CSV (built-in)
+* datetime (built-in)
 
 ---
 
 ## 📦 Requirements
 
-Install dependencies:
+No external libraries are required.
 
-```bash
-pip install beautifulsoup4 pandas lxml
-````
+```txt
+# requirements.txt
+```
+
+Or more explicitly:
+
+```txt
+# No dependencies required (uses Python standard library only)
+```
 
 ---
 
 ## 🚀 How to Use
 
-Follow these steps to run the project:
+### 1️⃣ Prepare your JSON file
 
-### 1️⃣ Clone the repository
+Make sure your file is located here (or update the path in the script):
 
-```bash
-git clone https://github.com/s-janine/Starlink-Summer.git
 ```
-
-### 2️⃣ Enter the project folder
-
-```bash
-cd Starlink-Summer
-```
-
-### 3️⃣ Install required libraries
-
-```bash
-pip install beautifulsoup4 pandas lxml
-```
-
-### 4️⃣ Run the scraper
-
-```bash
-python scrape_starlink.py
-```
-
-### 5️⃣ Check output
-
-After running the script, a CSV file will be generated in the project folder containing:
-
-* Date 📅
-* Data Usage 📊
-
----
-
-## 📁 Output Example
-
-```csv
-date,data_usage
-2025-01-01,2.5 GB
-2025-01-02,3.1 GB
+C:\Users\user\Documents\SOLA\Starlink\starlink_data.json
 ```
 
 ---
 
-## 🎯 Learning Outcome
+### 2️⃣ Run the script
 
-* Web scraping using BeautifulSoup
-* HTML parsing with lxml
-* Data extraction and structuring
-* Exporting data to CSV using pandas
+```bash
+python your_script_name.py
+```
+
+---
+
+### 3️⃣ Output file
+
+After running, the script generates:
+
+```
+starlink_daily_usage.csv
+```
+
+---
+
+## 📁 Output Format
+
+The CSV will contain:
+
+| Date       | Data Usage |
+| ---------- | ---------- |
+| 2025-11-17 | 2.35 GB    |
+| 2025-11-18 | 1.92 GB    |
+
+---
+
+## ⚙️ How It Works
+
+1. Reads JSON file containing billing cycles
+2. Extracts `startDate` for each cycle
+3. Iterates through `dailyData` array
+4. Computes each day using `timedelta`
+5. Formats values into GB
+6. Writes structured rows into CSV
+
+---
+
+## 🎯 Learning Outcomes
+
+* Working with nested JSON structures
+* Data extraction from API-like payloads
+* Date manipulation using `datetime`
+* Exporting structured datasets to CSV
+* Building real-world data pipelines
 
 ---
 
@@ -92,4 +107,4 @@ date,data_usage
 
 This project is for educational purposes only.
 
-```
+---
